@@ -12,7 +12,7 @@ import SVGLogo from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
-export function SignIn() {
+export function SignUp() {
   return (
     <KeyboardAvoidingView behavior="padding" background="gray.700" flexGrow={1}>
       <ScrollView
@@ -43,8 +43,10 @@ export function SignIn() {
               mb={6}
               fontFamily="heading"
             >
-              Acesse sua conta
+              Crie sua conta
             </Heading>
+
+            <Input placeholder="Nome" />
 
             <Input
               placeholder="E-mail"
@@ -54,16 +56,10 @@ export function SignIn() {
 
             <Input placeholder="Senha" secureTextEntry />
 
-            <Button title="Acessar" />
+            <Button title="Criar e acessar" />
           </Center>
 
-          <Center mt={24}>
-            <Text color="gray.100" fontSize="sm" mb={6} fontFamily="body">
-              Ainda não tem acesso?
-            </Text>
-
-            <Button title="Criar conta" variant="OUTLINE" />
-          </Center>
+          <Button mt={24} title="Voltar para o login" variant="OUTLINE" />
         </VStack>
       </ScrollView>
     </KeyboardAvoidingView>
