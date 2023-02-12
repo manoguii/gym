@@ -1,4 +1,12 @@
-import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
+import {
+  Center,
+  Heading,
+  Image,
+  ScrollView,
+  Text,
+  useToast,
+  VStack,
+} from 'native-base'
 import IMGBackground from '@assets/background.png'
 import SVGLogo from '@assets/logo.svg'
 import { Input } from '@components/Input'
@@ -7,6 +15,8 @@ import { useNavigation } from '@react-navigation/native'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { api } from '@services/api'
+import { AppError } from '@utils/AppError'
 
 interface FormDataProps {
   name: string
@@ -40,12 +50,34 @@ export function SignUp() {
 
   const navigation = useNavigation()
 
+  const toast = useToast()
+
   function handleGoBack() {
     navigation.goBack()
   }
 
-  function handleSignUp(data: FormDataProps) {
-    console.log(data)
+  async function handleSignUp({ name, email, password }: FormDataProps) {
+    try {
+      const response = await api.post('/users', {
+        name,
+        email,
+        password,
+      })
+
+      console.log(response.data)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const title = isAppError
+        ? error.message
+        : 'Não foi possível criar a conta, tente novamente mais tarde'
+
+      toast.show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500',
+      })
+    }
   }
 
   return (
