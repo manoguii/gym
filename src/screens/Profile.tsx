@@ -50,9 +50,7 @@ const PHOTO_SIZE = 32
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
-  const [userPhoto, setUserPhoto] = useState(
-    'https://www.github.com/manoguii.png',
-  )
+  const [userPhoto] = useState('https://www.github.com/manoguii.png')
 
   const { user, updateUserProfile } = useAuth()
 
@@ -84,8 +82,12 @@ export function Profile() {
         return null
       }
 
-      if (selectedPhoto.assets[0].uri) {
-        const photoInfo = FileSystem.getInfoAsync(selectedPhoto.assets[0].uri)
+      const uriPhotoSelected = selectedPhoto.assets[0].uri
+
+      const typePhotoSelected = selectedPhoto.assets[0].type
+
+      if (uriPhotoSelected) {
+        const photoInfo = FileSystem.getInfoAsync(uriPhotoSelected)
 
         const size = (await photoInfo).size
 
@@ -97,7 +99,41 @@ export function Profile() {
           })
         }
 
-        setUserPhoto(selectedPhoto.assets[0].uri)
+        const fileExtension = uriPhotoSelected.split('.').pop()
+
+        const nameFormated = user.name.split(' ').join('')
+
+        const photoFile = {
+          name: `${nameFormated}.${fileExtension}`.toLocaleLowerCase(),
+          uri: uriPhotoSelected,
+          type: `${typePhotoSelected}/${fileExtension}`,
+        } as any
+
+        const userPhotoUploadForm = new FormData()
+
+        userPhotoUploadForm.append('avatar', photoFile)
+
+        const avatarUpdatedResponse = await api.patch(
+          '/users/avatar',
+          userPhotoUploadForm,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        )
+
+        const userUpdated = user
+
+        userUpdated.avatar = avatarUpdatedResponse.data.avatar
+
+        updateUserProfile(userUpdated)
+
+        toast.show({
+          title: 'Foto atualizada com sucesso',
+          placement: 'top',
+          bgColor: 'green.700',
+        })
       }
     } catch (error) {
       console.log(error)
