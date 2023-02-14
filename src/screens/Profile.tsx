@@ -1,4 +1,5 @@
 import { Avatar } from '@components/Avatar'
+import DefaultUserAvatar from '@assets/userPhotoDefault.png'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
@@ -50,7 +51,6 @@ const PHOTO_SIZE = 32
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
-  const [userPhoto] = useState('https://www.github.com/manoguii.png')
 
   const { user, updateUserProfile } = useAuth()
 
@@ -192,7 +192,11 @@ export function Profile() {
             />
           ) : (
             <Avatar
-              source={{ uri: userPhoto }}
+              source={
+                user.avatar
+                  ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                  : DefaultUserAvatar
+              }
               alt="Imagem de perfil do usuario"
               size={PHOTO_SIZE}
             />
