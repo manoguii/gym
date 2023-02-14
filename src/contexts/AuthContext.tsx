@@ -21,6 +21,7 @@ export interface AuthContextDataProps {
   signIn: (email: string, password: string) => Promise<void>
   isLoadingStorageData: boolean
   signOut: () => Promise<void>
+  updateUserProfile: (userUpdated: UserDTO) => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextDataProps>(
@@ -102,14 +103,23 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
   }
 
+  async function updateUserProfile(userUpdated: UserDTO) {
+    try {
+      setUser(userUpdated)
+
+      await saveUserStorage(userUpdated)
+    } catch (error) {
+      throw error
+    }
+  }
+
   useEffect(() => {
     loadUserData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <AuthContext.Provider
-      value={{ user, signIn, isLoadingStorageData, signOut }}
+      value={{ user, signIn, isLoadingStorageData, signOut, updateUserProfile }}
     >
       {children}
     </AuthContext.Provider>
