@@ -6,6 +6,8 @@
     "no-useless-catch": "off",
     "camelcase": "off",
     "react-hooks/exhaustive-deps": "off",
-    "no-extra-boolean-cast": "off"
+    "no-extra-boolean-cast": "off",
+    "prefer-const": "off",
+    "no-async-promise-executor": "off"
   }
 }
